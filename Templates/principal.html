@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Gashor Trazabilidad{% endblock %}
+{% block page_subtitle %}Visualización de datos industriales en tiempo real{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: center; padding: 100px 40px;">
+    <div style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); width: 120px; height: 120px; margin: 0 auto 30px; border-radius: 30px; display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; font-weight: bold; box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.4);">
+        G
+    </div>
+    <h2 style="font-size: 2.5rem; margin-bottom: 20px; font-weight: 600;">Bienvenido a <span style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Gashor App</span></h2>
+    <p style="font-size: 1.2rem; color: var(--text-light); max-width: 600px; margin: 0 auto 40px;">
+        Esta plataforma te permite gestionar y visualizar la trazabilidad de los procesos de amasado de forma sencilla y eficiente.
+    </p>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; max-width: 900px; margin: 0 auto; text-align: left;">
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="margin-top: 0; display: flex; align-items: center; gap: 10px;">
+                <span style="color: var(--primary);">📈</span> Vista Detallada
+            </h3>
+            <p style="color: var(--text-light); font-size: 0.9rem;">Accede a <b>Trazabilidad 1</b> para ver el flujo completo de datos y tendencias.</p>
+        </div>
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="margin-top: 0; display: flex; align-items: center; gap: 10px;">
+                <span style="color: #a855f7;">📦</span> Vista por Lotes
+            </h3>
+            <p style="color: var(--text-light); font-size: 0.9rem;">Consulta <b>Trazabilidad 2</b> para un resumen rápido agrupado por BatchID.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
