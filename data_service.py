@@ -36,11 +36,11 @@ def get_db_connection() -> pyodbc.Connection | None:
         return None
 
 
-def fetch_amasadora_rows(limit: int = 100) -> tuple[list[str], list[list[Any]]]:
+def fetch_amasadora_rows(limit: int = 1000) -> tuple[list[str], list[list[Any]], bool]:
     """Obtiene filas recientes de Amasadora1."""
     conn = get_db_connection()
     if not conn:
-        return [], []
+        return [], [], False
 
     try:
         cursor = conn.cursor()
@@ -52,10 +52,10 @@ def fetch_amasadora_rows(limit: int = 100) -> tuple[list[str], list[list[Any]]]:
         cursor.execute(query)
         column_names = [column[0] for column in cursor.description]
         data = [list(row) for row in cursor.fetchall()]
-        return column_names, data
+        return column_names, data, True
     except Exception as exc:  # noqa: BLE001
         print(f"Error fetching data: {exc}")
-        return [], []
+        return [], [], False
     finally:
         conn.close()
 
@@ -77,13 +77,13 @@ def to_chart_series(rows: list[list[Any]]) -> tuple[list[str], list[float]]:
 def demo_payload() -> tuple[list[str], list[list[Any]], list[str], list[float]]:
     """Datos de fallback cuando no hay conexión a SQL Server."""
     column_names = ["ID", "Categoría", "Valor", "Fecha"]
-    data = [
+    data: list[list[Any]] = [
         [1, "Electrónica", 1500, "2024-03-01"],
         [2, "Hogar", 800, "2024-03-02"],
         [3, "Moda", 1200, "2024-03-03"],
         [4, "Deportes", 950, "2024-03-04"],
         [5, "Juguetes", 600, "2024-03-05"],
     ]
-    labels = [row[1] for row in data]
-    values = [row[2] for row in data]
+    labels = [str(row[1]) for row in data]
+    values = [float(row[2]) for row in data]
     return column_names, data, labels, values

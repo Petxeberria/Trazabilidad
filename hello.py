@@ -7,14 +7,15 @@ app = Flask(__name__, template_folder='Templates')
 
 @app.route('/')
 def index():
-    column_names, data = fetch_amasadora_rows(limit=100)
-
-    if data:
+    column_names, data, connection_success = fetch_amasadora_rows(limit=1000)
+    
+    if connection_success and data:
         labels, values = to_chart_series(data)
-        connection_success = True
-    else:
+    elif not connection_success:
         column_names, data, labels, values = demo_payload()
-        connection_success = False
+    else:
+        # Conexión ok pero sin datos
+        labels, values = [], []
 
     return render_template(
         'index.html',
