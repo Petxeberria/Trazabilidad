@@ -119,6 +119,40 @@
             </div>
         </div>
 
+        <div class="card" style="margin-bottom: 24px;">
+            <div class="card-title">Filtros de Búsqueda</div>
+            <form action="/" method="GET" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; align-items: end;">
+                <div>
+                    <label for="start_date" style="display: block; font-size: 0.8rem; color: var(--text-light); margin-bottom: 4px;">Fecha Inicio</label>
+                    <input type="datetime-local" id="start_date" name="start_date" value="{{ filters.start_date or '' }}" 
+                           style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit;">
+                </div>
+                <div>
+                    <label for="end_date" style="display: block; font-size: 0.8rem; color: var(--text-light); margin-bottom: 4px;">Fecha Fin</label>
+                    <input type="datetime-local" id="end_date" name="end_date" value="{{ filters.end_date or '' }}"
+                           style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit;">
+                </div>
+                <div>
+                    <label for="recipe_id" style="display: block; font-size: 0.8rem; color: var(--text-light); margin-bottom: 4px;">Tipo de Receta</label>
+                    <select id="recipe_id" name="recipe_id" 
+                            style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit; background: white;">
+                        <option value="">Todas las recetas</option>
+                        {% for recipe in recipes %}
+                        <option value="{{ recipe }}" {% if filters.recipe_id == recipe %}selected{% endif %}>{{ recipe }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button type="submit" style="flex: 1; background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: opacity 0.2s;">
+                        Aplicar Filtros
+                    </button>
+                    <a href="/" style="text-decoration: none; background: #f1f5f9; color: var(--text-light); padding: 10px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; justify-content: center;">
+                        Limpiar
+                    </a>
+                </div>
+            </form>
+        </div>
+
         <div class="dashboard-grid">
             <!-- Gráfico Principal -->
             <div class="card">

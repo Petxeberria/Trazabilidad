@@ -36,20 +36,46 @@ def get_db_connection() -> pyodbc.Connection | None:
         return None
 
 
-def fetch_amasadora_rows(limit: int = 1000) -> tuple[list[str], list[list[Any]], bool]:
-    """Obtiene filas recientes de Amasadora1."""
+def fetch_amasadora_rows(
+    limit: int = 1000,
+    start_date: str | None = None,
+    end_date: str | None = None,
+    recipe_id: str | None = None,
+) -> tuple[list[str], list[list[Any]], bool]:
+    """Obtiene filas de Amasadora1 con filtros opcionales."""
     conn = get_db_connection()
     if not conn:
         return [], [], False
 
     try:
         cursor = conn.cursor()
+        
+        # Construcción dinámica de la cláusula WHERE
+        where_clauses = []
+        params = []
+        
+        if start_date:
+            where_clauses.append("[Datetime] >= ?")
+            params.append(start_date)
+        if end_date:
+            where_clauses.append("[Datetime] <= ?")
+            params.append(end_date)
+        if recipe_id:
+            where_clauses.append("[RecipeID] = ?")
+            params.append(recipe_id)
+            
+        where_stmt = ""
+        if where_clauses:
+            where_stmt = "WHERE " + " AND ".join(where_clauses)
+
         query = f"""
         SELECT TOP ({limit}) [Datetime], [IngredienteID], [BatchID], [RecipeID], [Value]
         FROM [gashor].[dbo].[Amasadora1]
+        {where_stmt}
         ORDER BY [Datetime] DESC
         """
-        cursor.execute(query)
+        
+        cursor.execute(query, params)
         column_names = [column[0] for column in cursor.description]
         data = [list(row) for row in cursor.fetchall()]
         return column_names, data, True
@@ -72,6 +98,25 @@ def to_chart_series(rows: list[list[Any]]) -> tuple[list[str], list[float]]:
     ]
     values = [float(row[4]) if row[4] is not None else 0 for row in ordered_rows]
     return labels, values
+
+
+def fetch_distinct_recipes() -> list[str]:
+    """Obtiene la lista de IDs de receta únicos."""
+    conn = get_db_connection()
+    if not conn:
+        return []
+
+    try:
+        cursor = conn.cursor()
+        query = "SELECT DISTINCT [RecipeID] FROM [gashor].[dbo].[Amasadora1] WHERE [RecipeID] IS NOT NULL"
+        cursor.execute(query)
+        recipes = [str(row[0]) for row in cursor.fetchall()]
+        return recipes
+    except Exception as exc:  # noqa: BLE001
+        print(f"Error fetching recipes: {exc}")
+        return []
+    finally:
+        conn.close()
 
 
 def demo_payload() -> tuple[list[str], list[list[Any]], list[str], list[float]]:
